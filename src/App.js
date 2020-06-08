@@ -1,41 +1,60 @@
 import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import TodoList from "./containers/TodoList";
-import TodoInput from "./containers/TodoItem";
+import TodoInput from "./containers/TodoInput";
 import TodoItem from "./containers/TodoItem";
 import { v4 as uuid } from "uuid";
 
 export default class App extends Component {
   state = {
-    items: [
-      {
-        id: 1,
-        title: "wake up",
-      },
-      {
-        id: 2,
-        title: "take breakfast",
-      },
-    ],
+    items: [],
     id: uuid(),
     item: "",
     editItem: false,
   };
 
   handleChange = (e) => {
-    console.log("handle change");
+    this.setState({
+      item: e.target.value
+    })
   };
   handleSubmit = (e) => {
-    console.log("handle submit");
+    e.preventDefault();
+    const newItem = {
+      id: this.state.id,
+      item: this.state.item
+    }
+
+    const updatedItems = [...this.state.items, newItem]
+
+    this.setState({
+      items: updatedItems,
+      item:'',
+      id: uuid(),
+      editItem: false,
+    }, () => console.log(this.state))
   };
   clearList = () => {
-    console.log("clear list");
+    this.setState({
+      items: [],
+    })
   };
   handleDelete = (id) => {
-    console.log(`handle delete ${id}`);
+    const filterItem = this.state.items.filter(item => item.id !== id )
+    this.setState({
+      items: filterItem
+    })
   };
   handleEdit = (id) => {
-    console.log(`handle edit ${id}`);
+    const filterItem = this.state.items.filter((item) => item.id !== id);
+    const selectedItem = this.state.items.find(item => item.id === id)
+    console.log(selectedItem)
+    this.setState({
+      items: filterItem,
+      item: selectedItem.item,
+      id: id,
+      editItem: true,
+    })
   };
 
   render() {
